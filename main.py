@@ -4,7 +4,8 @@ from ip_getter import ip_getter
 
 webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
 tag_name = os.getenv("TAG_NAME")
-public_ip = ip_getter(tag_name)
+region = os.getenv("AWS_REGION")
+public_ip = ip_getter(tag_name, region)
 
 
 def main():

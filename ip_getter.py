@@ -2,14 +2,14 @@ import boto3
 from botocore.exceptions import ClientError
 
 
-def ip_getter(tag_name):
+def ip_getter(tag_name, region):
     """
     Get the public IP address of an EC2 instance tagged with Name: factorio
     Returns:
         str: Public IP address if found, None otherwise
     """
     try:
-        ec2 = boto3.client("ec2")
+        ec2 = boto3.client("ec2", region)
 
         response = ec2.describe_instances(
             Filters=[
