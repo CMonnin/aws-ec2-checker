@@ -77,8 +77,7 @@ class ServerCommands(commands.Cog):
             
             # Set ASG capacity to 1 to start a new instance
             if self.set_asg_capacity(1):
-                await ctx.send("✅ Server is starting up! It may take a few minutes to be fully operational.")
-                await ctx.send("Use !status to check the current state.")
+                await ctx.send("✅ Server is starting up! Hold on to your butts!")
             else:
                 await ctx.send("❌ Failed to start the server. Please check AWS console for details.")
                 
@@ -100,7 +99,7 @@ class ServerCommands(commands.Cog):
             
             # Set ASG capacity to 0 to terminate the instance
             if self.set_asg_capacity(0):
-                await ctx.send("✅ Server is shutting down... This may take a few minutes.")
+                await ctx.send("✅ Server is shutting down.")
             else:
                 await ctx.send("❌ Failed to stop the server. Please check AWS console for details.")
                 
@@ -124,9 +123,7 @@ class ServerCommands(commands.Cog):
                 instance = response['Reservations'][0]['Instances'][0]
                 public_ip = instance.get('PublicIpAddress', 'No IP assigned')
                 
-                embed.add_field(name="Status", value="🟢 Online", inline=False)
                 embed.add_field(name="IP Address", value=f"`{public_ip}:34197`", inline=False)
-                embed.add_field(name="Connection Command", value=f"Copy the IP address to connect", inline=False)
             else:
                 embed.add_field(name="Status", value="⭕ Server is stopped", inline=False)
                 embed.add_field(name="Note", value="Use !start to start the server", inline=False)
@@ -200,30 +197,3 @@ async def on_ready():
     print(f'Bot is ready and logged in as {bot.user}')
     await bot.add_cog(ServerCommands(bot))
 
-# Keep the original run command
-@bot.command()
-async def run(ctx, script_name: str):
-    """Runs a predefined script when called with !run script_name"""
-    if script_name not in ALLOWED_SCRIPTS:
-        await ctx.send(f"Error: Script '{script_name}' not found in allowed scripts.")
-        return
-        
-    try:
-        script_path = os.path.join('scripts', ALLOWED_SCRIPTS[script_name])
-        
-        if not os.path.exists(script_path):
-            await ctx.send(f"Error: Script file not found.")
-            return
-            
-        result = subprocess.run(['python', script_path], 
-                              capture_output=True,
-                              text=True,
-                              timeout=30)  
-        
-        output = result.stdout if result.stdout else "Script completed with no output."
-        await ctx.send(f"```\n{output}\n```")
-        
-    except subprocess.TimeoutExpired:
-        await ctx.send("Error: Script execution timed out.")
-    except Exception as e:
-        await ctx.send(f"Error running script: {str(e)}")
