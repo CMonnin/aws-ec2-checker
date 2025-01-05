@@ -19,4 +19,4 @@ AWS_SECRET_ACCESS_KEY
 AWS_REGION  
 
 ### Deployment
-deployed on [railway.com](railway.com)
+deployed on [railway.com](https://railway.com/)
